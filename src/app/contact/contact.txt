@@ -1,0 +1,3 @@
+serviceID = 'service_948loc6';
+templateID = 'template_35kopgs';
+const userID = 'xz0H2kzEl1ULijUFi';
