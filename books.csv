@@ -1,0 +1,51 @@
+id,title,author,price,section,cover_url,is_top_sell,is_favorite
+1,"Attack on Titan","Hajime Isayama",12.99,"Manga","https://source.unsplash.com/300x450/?manga,cover,titan",false,true
+2,"My Hero Academia","Kohei Horikoshi",9.99,"Manga","https://source.unsplash.com/300x450/?manga,cover,hero",false,false
+3,"Jujutsu Kaisen","Gege Akutami",11.99,"Manga","https://source.unsplash.com/300x450/?manga,cover,sorcery",true,false
+4,"Demon Slayer","Koyoharu Gotouge",10.99,"Manga","https://source.unsplash.com/300x450/?manga,cover,demon",false,false
+5,"One Piece","Eiichiro Oda",9.99,"Manga","https://source.unsplash.com/300x450/?manga,cover,pirate",false,false
+6,"Dune","Frank Herbert",18.99,"Science Fiction","https://source.unsplash.com/300x450/?scifi,cover,dune",true,false
+7,"Foundation","Isaac Asimov",15.99,"Science Fiction","https://source.unsplash.com/300x450/?scifi,cover,foundation",false,false
+8,"Neuromancer","William Gibson",14.99,"Science Fiction","https://source.unsplash.com/300x450/?scifi,cover,cyberpunk",false,false
+9,"Hyperion","Dan Simmons",17.99,"Science Fiction","https://source.unsplash.com/300x450/?scifi,cover,space",false,false
+10,"The Martian","Andy Weir",13.99,"Science Fiction","https://source.unsplash.com/300x450/?scifi,cover,mars",false,false
+11,"The Hobbit","J.R.R. Tolkien",14.99,"Fantasy","https://source.unsplash.com/300x450/?fantasy,cover,hobbit",false,false
+12,"A Game of Thrones","George R.R. Martin",19.99,"Fantasy","https://source.unsplash.com/300x450/?fantasy,cover,throne",true,false
+13,"The Name of the Wind","Patrick Rothfuss",16.99,"Fantasy","https://source.unsplash.com/300x450/?fantasy,cover,wind",false,true
+14,"Mistborn","Brandon Sanderson",18.99,"Fantasy","https://source.unsplash.com/300x450/?fantasy,cover,mist",false,false
+15,"The Witcher","Andrzej Sapkowski",15.99,"Fantasy","https://source.unsplash.com/300x450/?fantasy,cover,witcher",false,false
+16,"Gone Girl","Gillian Flynn",13.99,"Mystery","https://source.unsplash.com/300x450/?mystery,cover,girl",false,true
+17,"The Girl with the Dragon Tattoo","Stieg Larsson",14.99,"Mystery","https://source.unsplash.com/300x450/?mystery,cover,tattoo",false,false
+18,"And Then There Were None","Agatha Christie",12.99,"Mystery","https://source.unsplash.com/300x450/?mystery,cover,crime",false,false
+19,"The Silent Patient","Alex Michaelides",15.99,"Mystery","https://source.unsplash.com/300x450/?mystery,cover,silent",true,false
+20,"Big Little Lies","Liane Moriarty",11.99,"Mystery","https://source.unsplash.com/300x450/?mystery,cover,lies",false,false
+21,"It","Stephen King",19.99,"Horror","https://source.unsplash.com/300x450/?horror,cover,clown",true,false
+22,"The Haunting of Hill House","Shirley Jackson",14.99,"Horror","https://source.unsplash.com/300x450/?horror,cover,house",false,false
+23,"House of Leaves","Mark Z. Danielewski",22.99,"Horror","https://source.unsplash.com/300x450/?horror,cover,abstract",false,false
+24,"Mexican Gothic","Silvia Moreno-Garcia",16.99,"Horror","https://source.unsplash.com/300x450/?horror,cover,gothic",false,false
+25,"The Shining","Stephen King",17.99,"Horror","https://source.unsplash.com/300x450/?horror,cover,hotel",false,true
+26,"Pride and Prejudice","Jane Austen",12.99,"Romance","https://source.unsplash.com/300x450/?romance,cover,classic",false,false
+27,"Outlander","Diana Gabaldon",15.99,"Romance","https://source.unsplash.com/300x450/?romance,cover,scotland",true,false
+28,"The Notebook","Nicholas Sparks",13.99,"Romance","https://source.unsplash.com/300x450/?romance,cover,notebook",false,false
+29,"Red, White & Royal Blue","Casey McQuiston",14.99,"Romance","https://source.unsplash.com/300x450/?romance,cover,prince",false,false
+30,"The Hating Game","Sally Thorne",11.99,"Romance","https://source.unsplash.com/300x450/?romance,cover,office",false,true
+31,"Steve Jobs","Walter Isaacson",21.99,"Biography","https://source.unsplash.com/300x450/?biography,cover,apple",false,false
+32,"Educated","Tara Westover",18.99,"Biography","https://source.unsplash.com/300x450/?biography,cover,memoir",false,false
+33,"Becoming","Michelle Obama",24.99,"Biography","https://source.unsplash.com/300x450/?biography,cover,obama",true,false
+34,"The Diary of a Young Girl","Anne Frank",10.99,"Biography","https://source.unsplash.com/300x450/?biography,cover,diary",false,false
+35,"Shoe Dog","Phil Knight",17.99,"Biography","https://source.unsplash.com/300x450/?biography,cover,nike",false,false
+36,"To Kill a Mockingbird","Harper Lee",11.99,"Classics","https://source.unsplash.com/300x450/?classic,book,cover,bird",false,false
+37,"1984","George Orwell",10.99,"Classics","https://source.unsplash.com/300x450/?classic,book,cover,dystopian",true,true
+38,"The Great Gatsby","F. Scott Fitzgerald",9.99,"Classics","https://source.unsplash.com/300x450/?classic,book,cover,gatsby",false,false
+39,"Moby Dick","Herman Melville",14.99,"Classics","https://source.unsplash.com/300x450/?classic,book,cover,whale",false,false
+40,"War and Peace","Leo Tolstoy",22.99,"Classics","https://source.unsplash.com/300x450/?classic,book,cover,war",false,false
+41,"Salt, Fat, Acid, Heat","Samin Nosrat",29.99,"Cooking","https://source.unsplash.com/300x450/?cooking,book,cover,elements",false,true
+42,"The Food Lab","J. Kenji López-Alt",39.99,"Cooking","https://source.unsplash.com/300x450/?cooking,book,cover,science",false,false
+43,"Joy of Cooking","Irma S. Rombauer",25.99,"Cooking","https://source.unsplash.com/300x450/?cooking,book,cover,joy",false,false
+44,"Cravings","Chrissy Teigen",22.99,"Cooking","https://source.unsplash.com/300x450/?cooking,book,cover,cravings",false,false
+45,"Mastering the Art of French Cooking","Julia Child",35.99,"Cooking","https://source.unsplash.com/300x450/?cooking,book,cover,french",false,false
+46,"Atomic Habits","James Clear",19.99,"Self-Help","https://source.unsplash.com/300x450/?self-help,book,cover,habits",true,false
+47,"The Subtle Art of Not Giving a F*ck","Mark Manson",17.99,"Self-Help","https://source.unsplash.com/300x450/?self-help,book,cover,art",false,false
+48,"How to Win Friends and Influence People","Dale Carnegie",15.99,"Self-Help","https://source.unsplash.com/300x450/?self-help,book,cover,friends",false,false
+49,"Daring Greatly","Brené Brown",16.99,"Self-Help","https://source.unsplash.com/300x450/?self-help,book,cover,daring",false,false
+50,"The Power of Now","Eckhart Tolle",14.99,"Self-Help","https://source.unsplash.com/300x450/?self-help,book,cover,now",false,true

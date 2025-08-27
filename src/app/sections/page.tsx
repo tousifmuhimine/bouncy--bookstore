@@ -1,19 +1,42 @@
 /*
 ================================================================================
- FILE: src/app/sections/page.tsx (CREATE THIS FILE)
+ FILE: src/app/sections/page.tsx (UPDATE THIS FILE)
+ DESC: This file must now 'await' the createClient function.
 ================================================================================
 */
 import Link from 'next/link';
-import { bookData } from '@/data/books';
+import { createClient } from '@/lib/supabase/server';
+import type { Book, BookSection } from '@/types';
 
-export default function SectionsPage() {
+export default async function AllSectionsPage() {
+  // FIX: Await the createClient function because it is now async.
+  const supabase = await createClient();
+  const { data: books, error } = await supabase.from('books').select('*');
+  
+  if (error || !books) {
+    return <p className="text-white text-center p-8">Could not load sections.</p>;
+  }
+
+  const sectionsData = books.reduce<Record<string, Book[]>>((acc, book) => {
+    if (!acc[book.section]) {
+      acc[book.section] = [];
+    }
+    acc[book.section].push(book);
+    return acc;
+  }, {});
+
+  const sectionsArray: BookSection[] = Object.entries(sectionsData).map(([sectionName, books]) => ({
+    section: sectionName,
+    books: books,
+  }));
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-4xl font-extrabold text-center text-white mb-4">All Sections</h1>
       <p className="text-center text-gray-300 mb-12">Browse books by category</p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {bookData.map(section => (
+        {sectionsArray.map(section => (
           <Link 
             key={section.section}
             href={`/sections/${encodeURIComponent(section.section)}`}
@@ -49,4 +72,4 @@ export default function SectionsPage() {
       </div>
     </div>
   );
-}
+};
