@@ -1,19 +1,22 @@
 /*
 ================================================================================
- FILE: src/components/HorizontalCarousel.tsx
- DESC: The continuously floating carousel component. Uses CSS animation.
+ FILE: src/components/HorizontalCarousel.tsx (UPDATE THIS FILE)
+ DESC: This component is updated to accept children directly, which resolves the error.
 ================================================================================
 */
+"use client";
+
 import type { FC, ReactNode } from 'react';
 
-interface HorizontalCarouselProps<T> {
-  items: T[];
-  renderItem: (item: T) => ReactNode;
+interface HorizontalCarouselProps {
+  children: ReactNode;
   speedMultiplier?: number;
+  itemCount: number; // We need the original item count to calculate duration
 }
 
-const HorizontalCarousel = <T extends {}>({ items, renderItem, speedMultiplier = 1 }: HorizontalCarouselProps<T>) => {
-  const duration = (items.length * 280) / (50 * speedMultiplier);
+const HorizontalCarousel: FC<HorizontalCarouselProps> = ({ children, speedMultiplier = 1, itemCount }) => {
+  // Calculate a dynamic duration based on the number of items to keep speed consistent.
+  const duration = (itemCount * 280) / (50 * speedMultiplier);
 
   return (
     <div className="w-full overflow-hidden">
@@ -21,11 +24,7 @@ const HorizontalCarousel = <T extends {}>({ items, renderItem, speedMultiplier =
         className="animate-continuous-scroll"
         style={{ animationDuration: `${duration}s` }}
       >
-        {[...items, ...items].map((item, index) => (
-          <div key={index} className="flex-shrink-0 mx-4">
-            {renderItem(item)}
-          </div>
-        ))}
+        {children}
       </div>
     </div>
   );
