@@ -1,7 +1,7 @@
 /*
 ================================================================================
- FILE: src/components/Cart.tsx (CREATE THIS NEW FILE)
- DESC: The UI for the shopping cart slide-out panel.
+ FILE: src/components/Cart.tsx (UPDATE THIS FILE)
+ DESC: This file is updated to use the correct property for the book cover image.
 ================================================================================
 */
 "use client";
@@ -9,6 +9,7 @@
 import { FC } from 'react';
 import { useCart } from '@/context/CartContext';
 import { X, Trash2 } from 'lucide-react';
+import type { CartItem } from '@/types'; // Import CartItem type if not already
 
 interface CartProps {
   isOpen: boolean;
@@ -34,9 +35,10 @@ const Cart: FC<CartProps> = ({ isOpen, onClose }) => {
                 </div>
             ) : (
                 <div className="flex-grow overflow-y-auto p-4">
-                    {cartItems.map(item => (
+                    {cartItems.map((item: CartItem) => (
                         <div key={item.id} className="flex items-center gap-4 mb-4">
-                            <img src={item.cover} alt={item.title} className="w-16 h-24 object-cover rounded-md" />
+                            {/* FIX: Changed item.cover to item.cover_url to match the database */}
+                            <img src={item.cover_url} alt={item.title} className="w-16 h-24 object-cover rounded-md" />
                             <div className="flex-grow">
                                 <h3 className="text-white font-semibold">{item.title}</h3>
                                 <p className="text-slate-400 text-sm">${item.price.toFixed(2)} x {item.quantity}</p>
