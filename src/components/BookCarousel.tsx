@@ -1,7 +1,6 @@
 /*
 ================================================================================
- FILE: src/components/BookCarousel.tsx (CREATE THIS NEW FILE)
- DESC: This new Client Component handles rendering book cards in a carousel.
+ FILE: src/components/BookCarousel.tsx (UPDATE THIS FILE)
 ================================================================================
 */
 "use client";
@@ -13,14 +12,13 @@ import type { Book } from '@/types';
 
 interface BookCarouselProps {
   books: Book[];
-  speedMultiplier?: number;
 }
 
-const BookCarousel: FC<BookCarouselProps> = ({ books, speedMultiplier = 1 }) => {
+const BookCarousel: FC<BookCarouselProps> = ({ books }) => {
   return (
-    <HorizontalCarousel itemCount={books.length} speedMultiplier={speedMultiplier}>
+    <HorizontalCarousel>
       {[...books, ...books].map((book, index) => (
-        <div key={`${book.id}-${index}`} className="flex-shrink-0 mx-4">
+        <div key={`${book.id}-${index}`} className="flex-shrink-0 mx-2">
           <BookCard book={book} displayType="carousel" />
         </div>
       ))}

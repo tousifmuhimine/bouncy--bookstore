@@ -1,10 +1,12 @@
 /*
 ================================================================================
  FILE: src/app/book/[bookId]/page.tsx (UPDATE THIS FILE)
+ DESC: This file is now a Server Component that fetches data and passes it to a
+       new Client Component. This is a more robust pattern.
 ================================================================================
 */
 import { createClient } from '@/lib/supabase/server';
-import BookClientPage from '@/components/BookClientPage';
+import BookClientPage from '@/components/BookClientPage'; // We will create this new component
 import type { Book } from '@/types';
 
 interface BookPageProps {
@@ -14,7 +16,6 @@ interface BookPageProps {
 }
 
 export default async function BookPage({ params }: BookPageProps) {
-  // FIX: Await the createClient function because it is now async.
   const supabase = await createClient();
   
   const { data: book, error } = await supabase

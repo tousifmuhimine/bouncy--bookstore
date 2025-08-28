@@ -33,3 +33,18 @@
 .hero-title-gradient {
     animation: hero-bounce 3s infinite 0.2s;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b; /* slate-800 */
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569; /* slate-600 */
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b; /* slate-500 */
+}

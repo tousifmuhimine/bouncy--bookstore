@@ -1,14 +1,17 @@
-// src/types/index.ts
-
+/*
+================================================================================
+ FILE: src/types/index.ts (UPDATE THIS FILE)
+================================================================================
+*/
 export interface Book {
   id: number;
   title: string;
   author: string;
   price: number;
   section: string;
-  cover_url: string; // Changed from 'cover' to match the database
-  is_top_sell: boolean; // Added for Top Sells
-  is_favorite: boolean; // Added for Favorites
+  cover_url: string; 
+  is_top_sell: boolean;
+  is_favorite: boolean;
 }
 
 export interface BookSection {

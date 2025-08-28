@@ -9,7 +9,9 @@
 import { FC } from 'react';
 import { useCart } from '@/context/CartContext';
 import { X, Trash2 } from 'lucide-react';
-import type { CartItem } from '@/types'; // Import CartItem type if not already
+import Link from 'next/link';
+import type { CartItem } from '@/types';
+
 
 interface CartProps {
   isOpen: boolean;
@@ -57,10 +59,10 @@ const Cart: FC<CartProps> = ({ isOpen, onClose }) => {
                         <span className="text-lg text-white font-bold">Total:</span>
                         <span className="text-lg text-cyan-400 font-bold">${totalPrice.toFixed(2)}</span>
                     </div>
-                    <button className="w-full bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">
+                    <Link href="/checkout" onClick={onClose} className="w-full block text-center bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity">
                         Proceed to Checkout
-                    </button>
-                     <button onClick={clearCart} className="w-full mt-2 text-slate-400 text-sm hover:text-white">
+                    </Link>
+                    <button onClick={clearCart} className="w-full mt-2 text-slate-400 text-sm hover:text-white">
                         Clear Cart
                     </button>
                 </div>

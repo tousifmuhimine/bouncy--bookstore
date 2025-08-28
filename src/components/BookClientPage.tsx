@@ -1,6 +1,8 @@
 /*
 ================================================================================
- FILE: src/components/BookClientPage.tsx
+ FILE: src/components/BookClientPage.tsx (CREATE THIS NEW FILE)
+ DESC: This new Client Component handles the UI and user interactions for the
+       book details page, like adding to the cart.
 ================================================================================
 */
 "use client";
@@ -10,7 +12,9 @@ import { ShoppingCart } from 'lucide-react';
 import type { FC } from 'react';
 import { useCart } from '@/context/CartContext';
 import type { Book } from '@/types';
+import { useRouter } from 'next/navigation';
 
+// A small, reusable Client Component for the image to handle the onError event
 const BookImage: FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return (
     <img 
@@ -31,6 +35,12 @@ interface BookClientPageProps {
 
 const BookClientPage: FC<BookClientPageProps> = ({ book }) => {
   const { addToCart } = useCart();
+  const router = useRouter();
+
+  const handleBuyNow = () => {
+    addToCart(book);
+    router.push('/checkout');
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -47,7 +57,7 @@ const BookClientPage: FC<BookClientPageProps> = ({ book }) => {
                 A captivating tale that will transport you to another world. This book explores profound themes with unforgettable characters and a gripping plot that will keep you on the edge of your seat.
              </p>
              <div className="flex items-center gap-4">
-                <button onClick={() => addToCart(book)} className="flex-1 bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity shadow-lg">Buy Now</button>
+                <button onClick={handleBuyNow} className="flex-1 bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white font-bold py-3 px-6 rounded-lg text-lg hover:opacity-90 transition-opacity shadow-lg">Buy Now</button>
                 <button onClick={() => addToCart(book)} className="bg-slate-700 text-white py-3 px-5 rounded-lg hover:bg-slate-600 transition-colors"><ShoppingCart size={24}/></button>
              </div>
           </div>
