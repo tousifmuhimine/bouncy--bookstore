@@ -101,7 +101,7 @@ const LoginClientPage: FC = () => {
                                     <label htmlFor="phone" className="block text-sm font-medium text-slate-300 mb-1">Phone Number (Optional)</label>
                                     <PhoneInput
                                         international
-                                        defaultCountry="US"
+                                        defaultCountry="BD"
                                         value={phone}
                                         onChange={setPhone}
                                         className="phone-input"
