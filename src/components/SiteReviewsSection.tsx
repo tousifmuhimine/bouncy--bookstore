@@ -1,8 +1,8 @@
 /*
 ================================================================================
  FILE: src/components/SiteReviewsSection.tsx (UPDATE THIS FILE)
- DESC: This component has been updated with a more compact design and improved
-       logic for editing reviews.
+ DESC: This component has been updated to accept the 'userReview' prop, which
+       resolves the Vercel build error and simplifies its internal logic.
 ================================================================================
 */
 "use client";
@@ -12,11 +12,13 @@ import { Star } from 'lucide-react';
 import SiteReviewForm from '@/components/SiteReviewForm';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface SiteReviewsSectionProps {
   reviews: SiteReview[];
   user: User | null;
+  // FIX: Added the userReview prop to the interface to accept it from the parent page.
+  userReview: SiteReview | null;
 }
 
 const StarRating = ({ rating }: { rating: number }) => (
@@ -31,19 +33,12 @@ const StarRating = ({ rating }: { rating: number }) => (
   </div>
 );
 
-export default function SiteReviewsSection({ reviews, user }: SiteReviewsSectionProps) {
-  const [userReview, setUserReview] = useState<SiteReview | null>(null);
-  // NEW: State to control when the editing form is visible
+// FIX: The component now accepts 'userReview' directly as a prop.
+export default function SiteReviewsSection({ reviews, user, userReview }: SiteReviewsSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    if (user && reviews) {
-      const foundReview = reviews.find(r => r.user_id === user.id);
-      setUserReview(foundReview || null);
-      // Reset editing state if the review changes (e.g., after submission)
-      setIsEditing(false);
-    }
-  }, [reviews, user]);
+  // FIX: The client-side useEffect to find the user's review is no longer needed,
+  // as this is now handled on the server by the parent page component.
   
   const floatingReviews = reviews?.slice(0, 5) || [];
 
@@ -59,7 +54,6 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
         </div>
         
         {floatingReviews.length > 0 && (
-          // FIX: Reduced the height of the container to take up less space
           <div className="relative h-80 flex justify-center items-center">
             {floatingReviews.map((review, index) => {
               const positions = [
@@ -76,7 +70,6 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
               return (
                 <div
                   key={review.id}
-                  // FIX: Made the bubbles smaller (w-48 h-48)
                   className="absolute p-4 w-48 h-48 bg-slate-800/80 backdrop-blur-md rounded-full border border-slate-700 flex flex-col items-center justify-center text-center shadow-2xl"
                   style={{
                     ...position,
@@ -98,7 +91,6 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
           </div>
         )}
         
-        {/* FIX: Updated logic to show 'Edit' button or the form */}
         {user && (
           userReview && !isEditing ? (
             <div className="text-center mt-8">
@@ -115,4 +107,3 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
     </div>
   );
 }
-
