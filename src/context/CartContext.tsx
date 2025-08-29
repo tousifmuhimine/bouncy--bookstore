@@ -1,8 +1,7 @@
 /*
 ================================================================================
  FILE: src/context/CartContext.tsx (UPDATE THIS FILE)
- DESC: The addToCart function has been updated to accept a 'buyNow' parameter
-       and handle the redirect to the checkout page.
+ DESC: Added the 'totalPrice' calculation and exposed it in the context.
 ================================================================================
 */
 "use client";
@@ -13,6 +12,7 @@ import type { CartItem, Book } from '@/types';
 
 interface CartContextType {
   cartItems: CartItem[];
+  totalPrice: number; // Add this property
   addToCart: (book: Book, buyNow?: boolean) => void;
   removeFromCart: (bookId: number) => void;
   updateQuantity: (bookId: number, quantity: number) => void;
@@ -28,6 +28,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const router = useRouter();
 
+  // FIX: Calculate the total price from the cart items.
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
   const addToCart = (book: Book, buyNow: boolean = false) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === book.id);
@@ -40,10 +43,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
 
     if (buyNow) {
-      setIsCartOpen(false); // Ensure cart is closed
+      setIsCartOpen(false);
       router.push('/checkout');
     } else {
-      setIsCartOpen(true); // Open cart when just adding an item
+      setIsCartOpen(true);
     }
   };
 
@@ -66,7 +69,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, setIsCartOpen }}>
+    // FIX: Provide the new 'totalPrice' value to the context.
+    <CartContext.Provider value={{ cartItems, totalPrice, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, setIsCartOpen }}>
       {children}
     </CartContext.Provider>
   );
