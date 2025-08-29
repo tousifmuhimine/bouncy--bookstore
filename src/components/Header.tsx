@@ -1,14 +1,15 @@
 /*
 ================================================================================
  FILE: src/components/Header.tsx (UPDATE THIS FILE)
- DESC: Fixed a TypeScript error in the cart item calculation.
+ DESC: Added user name display beside the login/logout button.
+       Fixed a TypeScript error in the cart item calculation.
 ================================================================================
 */
 "use client";
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, User } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import Cart from '@/components/Cart';
 import { createClient } from '@/lib/supabase/client';
@@ -49,6 +50,12 @@ export default function Header() {
   
   const totalItems = cart.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
 
+  // Get user's display name (prioritize full_name, fallback to email)
+  const getUserDisplayName = () => {
+    if (!user) return null;
+    return user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+  };
+
   return (
     <>
       <header className="bg-slate-900/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-700">
@@ -73,20 +80,42 @@ export default function Header() {
                 <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 {!loading && (
                     user ? (
-                        <button onClick={handleLogout} className="bg-fuchsia-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-fuchsia-700 transition-colors">
-                            Logout
+                      <div className="flex items-center gap-3">
+                        {/* User greeting - hidden on small screens */}
+                        <div className="hidden sm:flex items-center gap-2 text-gray-300">
+                          <User size={16} />
+                          <span className="text-sm">Hello, <span className="text-white font-medium">{getUserDisplayName()}</span></span>
+                        </div>
+                        
+                        {/* Mobile user indicator - shown only on small screens */}
+                        <div className="sm:hidden flex items-center text-cyan-400">
+                          <User size={18} />
+                        </div>
+                        
+                        <button 
+                          onClick={handleLogout} 
+                          className="bg-fuchsia-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-fuchsia-700 transition-colors"
+                        >
+                          Logout
                         </button>
+                      </div>
                     ) : (
-                        <Link href="/login" className="bg-cyan-500 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-cyan-400 transition-colors">
-                            Login
+                        <Link 
+                          href="/login" 
+                          className="bg-cyan-500 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-cyan-400 transition-colors"
+                        >
+                          Login
                         </Link>
                     )
                 )}
                 
-                <button onClick={() => setIsCartOpen(true)} className="relative text-gray-300 hover:text-white transition-colors">
+                <button 
+                  onClick={() => setIsCartOpen(true)} 
+                  className="relative text-gray-300 hover:text-white transition-colors"
+                >
                   <ShoppingCart />
                   {totalItems > 0 && (
                     <span className="absolute -top-2 -right-2 bg-cyan-500 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
@@ -97,7 +126,10 @@ export default function Header() {
               </div>
 
               <div className="md:hidden">
-                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-300 hover:text-white">
+                <button 
+                  onClick={() => setIsMenuOpen(!isMenuOpen)} 
+                  className="text-gray-300 hover:text-white"
+                >
                   {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
               </div>
@@ -108,12 +140,38 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden bg-slate-900 py-4">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+              {/* Mobile user greeting */}
+              {user && (
+                <div className="flex items-center gap-2 text-cyan-400 mb-2 px-3 py-2">
+                  <User size={16} />
+                  <span className="text-sm">Hello, <span className="text-white font-medium">{getUserDisplayName()}</span></span>
+                </div>
+              )}
+              
               <div className="w-full px-4 mb-4">
                   <Searchbar />
               </div>
-              <Link href="/" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link href="/about" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsMenuOpen(false)}>About</Link>
-              <Link href="/contact" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+              <Link 
+                href="/" 
+                className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/about" 
+                className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                href="/contact" 
+                className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
+              </Link>
             </div>
           </div>
         )}
@@ -122,4 +180,3 @@ export default function Header() {
     </>
   );
 }
-
