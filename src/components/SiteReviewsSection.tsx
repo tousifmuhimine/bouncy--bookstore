@@ -1,18 +1,21 @@
 /*
 ================================================================================
  FILE: src/components/SiteReviewsSection.tsx (UPDATE THIS FILE)
- DESC: Updated to accept the 'user' prop to conditionally show the review form.
+ DESC: Fixed the build error by removing client-side hooks and moving the logic
+       to the server side. Added the 'See All' link and updated the layout.
 ================================================================================
 */
 import type { SiteReview } from '@/types';
 import { Star } from 'lucide-react';
-import SiteReviewForm from './SiteReviewForm';
+import SiteReviewForm from '@/components/SiteReviewForm';
 import type { User } from '@supabase/supabase-js';
+import HorizontalCarousel from '@/components/HorizontalCarousel';
+import Link from 'next/link';
 
-// FIX: Added the 'user' property to the props interface.
 interface SiteReviewsSectionProps {
   reviews: SiteReview[];
   user: User | null;
+  userReview?: SiteReview | null; // Add this prop to receive the user's existing review
 }
 
 const StarRating = ({ rating }: { rating: number }) => (
@@ -27,21 +30,21 @@ const StarRating = ({ rating }: { rating: number }) => (
   </div>
 );
 
-// FIX: The component now accepts the 'user' prop.
-export default function SiteReviewsSection({ reviews, user }: SiteReviewsSectionProps) {
-  const extendedReviews = reviews && reviews.length > 0 ? [...reviews, ...reviews] : [];
-
+export default function SiteReviewsSection({ reviews, user, userReview = null }: SiteReviewsSectionProps) {
   return (
     <div className="py-16 bg-slate-900 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center text-white mb-12">What Our Readers Are Saying</h2>
+        {/* Updated this section to add the 'See All' link */}
+        <div className="flex justify-between items-center mb-12">
+          <h2 className="text-3xl font-bold text-white">What Our Readers Are Saying</h2>
+          <Link href="/reviews" className="text-cyan-400 hover:text-cyan-300 font-semibold flex-shrink-0">See All &rarr;</Link>
+        </div>
         
-        {extendedReviews.length > 0 && (
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-slate-900 z-10"></div>
-            <div className="flex animate-continuous-scroll" style={{ animationDuration: `${extendedReviews.length * 5}s` }}>
-              {extendedReviews.map((review, index) => (
-                <div key={`${review.id}-${index}`} className="flex-shrink-0 w-80 mx-4 bg-slate-800 p-6 rounded-lg border border-slate-700">
+        {reviews && reviews.length > 0 && (
+          <HorizontalCarousel itemCount={reviews.length} speedMultiplier={0.5}>
+            {reviews.map((review) => (
+              <div key={review.id} className="flex-shrink-0 w-80 mx-4">
+                <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 h-full">
                   <div className="flex items-center mb-4">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xl">
                       {review.user_name.charAt(0)}
@@ -53,13 +56,12 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
                   </div>
                   <p className="text-slate-300 italic line-clamp-3">"{review.review_text}"</p>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            ))}
+          </HorizontalCarousel>
         )}
         
-        {/* This check will now work correctly */}
-        {user && <SiteReviewForm />}
+        {user && <SiteReviewForm existingReview={userReview} />}
       </div>
     </div>
   );
