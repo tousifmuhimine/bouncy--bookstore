@@ -1,11 +1,13 @@
 /*
 ================================================================================
  FILE: src/app/collection/[collectionName]/page.tsx (UPDATE THIS FILE)
+ DESC: This file is updated to correctly filter and pass book data to the client
+       component, fixing the issue where no book details were shown.
 ================================================================================
 */
-import { createClient } from '@/lib/supabase/server';
-import CollectionClientPage from '@/components/CollectionClientPage';
+import { createClient } from '../../../lib/supabase/server';
 import type { Book } from '@/types';
+import CollectionClientPage from '../../../components/CollectionClientPage';
 
 interface CollectionPageProps {
   params: {
@@ -14,29 +16,26 @@ interface CollectionPageProps {
 }
 
 export default async function CollectionPage({ params }: CollectionPageProps) {
-  // FIX: Await the createClient function because it is now async.
   const supabase = await createClient();
-  let collection: { title: string; books: Book[] } | null = null;
-  
+  const collectionName = decodeURIComponent(params.collectionName);
+
   let query = supabase.from('books').select<"*", Book>("*");
-  let title = '';
 
-  if (params.collectionName === 'top-sells') {
-    title = 'Top Sells';
+  if (collectionName === 'top-sells') {
     query = query.eq('is_top_sell', true);
-  } else if (params.collectionName === 'editors-favorites') {
-    title = "Editor's Favorites";
+  } else if (collectionName === 'editors-favorites') {
     query = query.eq('is_favorite', true);
-  } else {
-    return <div className="text-white text-center py-20">Collection not found.</div>;
   }
-  
-  const { data, error } = await query;
-  if (error || !data) {
-    return <div className="text-white text-center py-20">Could not load collection.</div>;
-  }
-  
-  collection = { title, books: data };
 
-  return <CollectionClientPage collection={collection} />;
+  const { data: books, error } = await query;
+
+  const title = collectionName === 'top-sells' ? 'Top Sells' : "Editor's Favorites";
+
+  if (error) {
+    console.error(`Error fetching ${collectionName}:`, error);
+    return <p className="text-white text-center p-8">Could not load this collection.</p>;
+  }
+
+  // FIX: Pass the fetched books and title as props to the client component.
+  return <CollectionClientPage initialBooks={books || []} title={title} />;
 }

@@ -5,6 +5,41 @@
 @tailwind utilities; */
 @import "tailwindcss";
 
+/* Custom dark-themed scrollbar for the carousels */
+.continuous-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+.continuous-scroll-container::-webkit-scrollbar-track {
+  background: #1e293b; /* slate-800 */
+  border-radius: 10px;
+}
+.continuous-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #3562a1; /* slate-600 */
+  border-radius: 10px;
+  border: 2px solid #020b1a; /* slate-800 */
+}
+.continuous-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b; /* slate-500 */
+}
+
+/* FIX: New CSS-based animation for robust cross-browser floating */
+@keyframes continuous-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+.animate-continuous-scroll-inner {
+  animation: continuous-scroll var(--animation-duration, 40s) linear infinite;
+}
+
+/* Pause animation on hover/interaction */
+.continuous-scroll-container:hover .animate-continuous-scroll-inner,
+.continuous-scroll-container[data-interacting="true"] .animate-continuous-scroll-inner {
+  animation-play-state: paused;
+}
+
+
+/* Existing Animations */
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
   40% { transform: translateY(-10px); }
@@ -12,15 +47,6 @@
 }
 .bouncy-title {
   animation: bounce 2s infinite;
-}
-
-@keyframes continuous-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.animate-continuous-scroll {
-  display: flex;
-  animation: continuous-scroll linear infinite;
 }
 
 @keyframes hero-bounce {
@@ -34,17 +60,19 @@
     animation: hero-bounce 3s infinite 0.2s;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
+/* Custom styles for react-phone-number-input */
+.phone-input .PhoneInputInput {
+  background-color: #334268; /* slate-900 */
+  border: 1px solid #334155; /* slate-600 */
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  color: white;
+  width: 100%;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #1e293b; /* slate-800 */
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #475569; /* slate-600 */
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #64748b; /* slate-500 */
+.phone-input .PhoneInputCountry {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-right: none;
+  border-radius: 0.375rem 0 0 0.375rem;
+  padding: 0 0.5rem;
 }

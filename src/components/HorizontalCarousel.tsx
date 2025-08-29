@@ -1,72 +1,85 @@
 /*
 ================================================================================
  FILE: src/components/HorizontalCarousel.tsx (UPDATE THIS FILE)
- DESC: This component is updated to use a JavaScript animation that runs
-       continuously, even during user interaction.
+ DESC: This file is updated with more robust animation logic to ensure the
+       floating effect works correctly on iOS/Safari.
 ================================================================================
 */
 "use client";
 
-import { FC, ReactNode, useRef, useEffect } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { FC, useRef, useEffect, useState, ReactNode } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface HorizontalCarouselProps {
   children: ReactNode;
+  itemCount: number;
+  speedMultiplier?: number;
 }
 
-const HorizontalCarousel: FC<HorizontalCarouselProps> = ({ children }) => {
+const HorizontalCarousel: FC<HorizontalCarouselProps> = ({ children, itemCount, speedMultiplier = 1 }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [isInteracting, setIsInteracting] = useState(false);
 
+  // FIX: Refactored animation logic for better cross-browser compatibility, especially on iOS.
   useEffect(() => {
     const scroller = scrollerRef.current;
-    if (!scroller) return;
+    if (!scroller || itemCount === 0) return;
 
-    let animationFrameId: number;
+    // Use a simpler CSS animation for the continuous scroll
+    scroller.style.setProperty('--animation-duration', `${itemCount * 5 / speedMultiplier}s`);
 
-    const scrollAnimation = () => {
-      // This animation runs continuously. Manual scrolling will temporarily
-      // override it, but the animation will resume from the new position.
-      scroller.scrollLeft += 0.5;
-      
-      // When the scroll position reaches the start of the second set of items,
-      // reset it to the beginning to create a seamless loop.
-      if (scroller.scrollLeft >= scroller.scrollWidth / 2) {
-        scroller.scrollLeft -= scroller.scrollWidth / 2;
-      }
-      animationFrameId = requestAnimationFrame(scrollAnimation);
-    };
+    const handleInteractionStart = () => setIsInteracting(true);
+    const handleInteractionEnd = () => setIsInteracting(false);
 
-    animationFrameId = requestAnimationFrame(scrollAnimation);
+    scroller.addEventListener('pointerdown', handleInteractionStart);
+    scroller.addEventListener('pointerup', handleInteractionEnd);
+    scroller.addEventListener('pointerleave', handleInteractionEnd);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      scroller.removeEventListener('pointerdown', handleInteractionStart);
+      scroller.removeEventListener('pointerup', handleInteractionEnd);
+      scroller.removeEventListener('pointerleave', handleInteractionEnd);
     };
-  }, []); // Empty dependency array ensures this runs only once
+  }, [itemCount, speedMultiplier]);
 
-  const scroll = (direction: 'left' | 'right') => {
+  const handleNav = (direction: 'left' | 'right') => {
     const scroller = scrollerRef.current;
     if (scroller) {
       const scrollAmount = scroller.clientWidth * 0.8;
-      scroller.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+      scroller.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
     }
   };
 
   return (
-    <div className="w-full relative group">
-      <div ref={scrollerRef} className="flex overflow-x-auto custom-scrollbar pb-4">
-        {children}
+    <div className="relative group">
+      <div
+        ref={scrollerRef}
+        className="flex overflow-x-auto continuous-scroll-container"
+        data-interacting={isInteracting}
+      >
+        <div className="flex animate-continuous-scroll-inner">
+          {children}
+        </div>
+        <div className="flex animate-continuous-scroll-inner" aria-hidden="true">
+          {children}
+        </div>
       </div>
-       <button 
-        onClick={() => scroll('left')} 
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-black/75"
+      
+      {/* Navigation Buttons */}
+      <button
+        onClick={() => handleNav('left')}
+        className="absolute left-0 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
       >
-        <ArrowLeft />
+        <ChevronLeft size={24} />
       </button>
-      <button 
-        onClick={() => scroll('right')} 
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-black/75"
+      <button
+        onClick={() => handleNav('right')}
+        className="absolute right-0 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
       >
-        <ArrowRight />
+        <ChevronRight size={24} />
       </button>
     </div>
   );
