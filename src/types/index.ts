@@ -34,3 +34,13 @@ export interface Review {
   review_text: string;
   user_name: string;
 }
+
+// NEW: Add this interface for general site reviews
+export interface SiteReview {
+  id: number;
+  created_at: string;
+  user_id: string;
+  rating: number;
+  review_text: string;
+  user_name: string;
+}
