@@ -1,7 +1,7 @@
 /*
 ================================================================================
  FILE: src/context/CartContext.tsx (UPDATE THIS FILE)
- DESC: Added the 'totalPrice' calculation and exposed it in the context.
+ DESC: Added the 'cartCount' calculation and exposed it in the context.
 ================================================================================
 */
 "use client";
@@ -12,7 +12,8 @@ import type { CartItem, Book } from '@/types';
 
 interface CartContextType {
   cartItems: CartItem[];
-  totalPrice: number; // Add this property
+  totalPrice: number;
+  cartCount: number; // Add this property
   addToCart: (book: Book, buyNow?: boolean) => void;
   removeFromCart: (bookId: number) => void;
   updateQuantity: (bookId: number, quantity: number) => void;
@@ -28,8 +29,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const router = useRouter();
 
-  // FIX: Calculate the total price from the cart items.
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  
+  // FIX: Calculate the total number of items (cartCount).
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const addToCart = (book: Book, buyNow: boolean = false) => {
     setCartItems(prevItems => {
@@ -69,8 +72,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    // FIX: Provide the new 'totalPrice' value to the context.
-    <CartContext.Provider value={{ cartItems, totalPrice, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, setIsCartOpen }}>
+    // FIX: Provide the new 'cartCount' value to the context.
+    <CartContext.Provider value={{ cartItems, totalPrice, cartCount, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, setIsCartOpen }}>
       {children}
     </CartContext.Provider>
   );
