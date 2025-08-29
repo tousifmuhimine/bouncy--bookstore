@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 interface SiteReviewsSectionProps {
   reviews: SiteReview[];
   user: User | null;
+  userReview: SiteReview | null;
 }
 
 const StarRating = ({ rating }: { rating: number }) => (
