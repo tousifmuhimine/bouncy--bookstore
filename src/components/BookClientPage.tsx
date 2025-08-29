@@ -1,7 +1,8 @@
 /*
 ================================================================================
  FILE: src/components/BookClientPage.tsx (UPDATE THIS FILE)
- DESC: Updated to show existing reviews and include the ReviewForm component.
+ DESC: This page now checks for a user's existing review. If found, it shows
+       an "Edit" button instead of the new review form.
 ================================================================================
 */
 "use client";
@@ -11,7 +12,7 @@ import { useCart } from '@/context/CartContext';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
-import ReviewForm from './ReviewForm'; // Import the new form
+import ReviewForm from './ReviewForm';
 import { Star } from 'lucide-react';
 
 interface BookClientPageProps {
@@ -34,15 +35,21 @@ const StarRating = ({ rating }: { rating: number }) => (
 export default function BookClientPage({ book, initialReviews }: BookClientPageProps) {
   const { addToCart } = useCart();
   const [user, setUser] = useState<User | null>(null);
+  const [userReview, setUserReview] = useState<Review | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
+      if (data.user && initialReviews) {
+        const foundReview = initialReviews.find(r => r.user_id === data.user!.id);
+        setUserReview(foundReview || null);
+      }
     };
     fetchUser();
-  }, []);
+  }, [initialReviews]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -86,15 +93,13 @@ export default function BookClientPage({ book, initialReviews }: BookClientPageP
         </div>
       </div>
 
-      {/* NEW: Reviews Section */}
       <div className="mt-16">
         <h2 className="text-3xl font-bold text-white border-b border-slate-700 pb-4 mb-6">
-          Reader Reviews ({initialReviews.length})
+          Reader Reviews ({initialReviews?.length || 0})
         </h2>
 
-        {/* Display existing reviews */}
         <div className="space-y-6">
-          {initialReviews.length > 0 ? (
+          {initialReviews && initialReviews.length > 0 ? (
             initialReviews.map(review => (
               <div key={review.id} className="bg-slate-800 p-4 rounded-lg border border-slate-700">
                 <div className="flex items-center mb-2">
@@ -113,10 +118,22 @@ export default function BookClientPage({ book, initialReviews }: BookClientPageP
             <p className="text-slate-400">No reviews yet. Be the first to write one!</p>
           )}
         </div>
-
-        {/* Display the form for logged-in users */}
-        {user && <ReviewForm bookId={book.id} />}
+        
+        {/* Logic to show either 'Edit' button or the review form */}
+        {user && (
+          userReview && !isEditing ? (
+            <div className="text-center mt-8">
+              <p className="text-slate-300">You've already reviewed this book.</p>
+              <button onClick={() => setIsEditing(true)} className="mt-2 text-cyan-400 hover:text-cyan-300 font-semibold">
+                Edit Your Review
+              </button>
+            </div>
+          ) : (
+            <ReviewForm bookId={book.id} existingReview={userReview} />
+          )
+        )}
       </div>
     </div>
   );
 }
+

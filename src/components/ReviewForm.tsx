@@ -1,24 +1,34 @@
 /*
 ================================================================================
- FILE: src/components/ReviewForm.tsx (NEW FILE)
- DESC: A client component for the 'Write a review' form.
+ FILE: src/components/ReviewForm.tsx (UPDATE THIS FILE)
+ DESC: This form is now updated to accept the 'existingReview' prop, which
+       will fix the TypeScript error and allow users to edit their reviews.
 ================================================================================
 */
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import { submitReview } from '@/actions/reviews';
+import type { Review } from '@/types';
 
+// FIX: Added the 'existingReview' prop to the interface.
 interface ReviewFormProps {
   bookId: number;
+  existingReview?: Review | null;
 }
 
-export default function ReviewForm({ bookId }: ReviewFormProps) {
-  const [rating, setRating] = useState(0);
+export default function ReviewForm({ bookId, existingReview }: ReviewFormProps) {
+  const [rating, setRating] = useState(existingReview?.rating || 0);
+  const [reviewText, setReviewText] = useState(existingReview?.review_text || '');
   const [hoverRating, setHoverRating] = useState(0);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    setRating(existingReview?.rating || 0);
+    setReviewText(existingReview?.review_text || '');
+  }, [existingReview]);
 
   const handleFormSubmit = async (formData: FormData) => {
     formData.set('rating', String(rating));
@@ -29,14 +39,14 @@ export default function ReviewForm({ bookId }: ReviewFormProps) {
       setMessage({ type: 'error', text: result.error });
     } else if (result.success) {
       setMessage({ type: 'success', text: result.success });
-      formRef.current?.reset();
-      setRating(0);
     }
   };
 
   return (
     <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 mt-8">
-      <h3 className="text-2xl font-bold text-white mb-4">Write a Review</h3>
+      <h3 className="text-2xl font-bold text-white mb-4">
+        {existingReview ? 'Edit Your Review' : 'Write a Review'}
+      </h3>
       <form action={handleFormSubmit} ref={formRef} className="space-y-4">
         <input type="hidden" name="bookId" value={bookId} />
         
@@ -73,6 +83,8 @@ export default function ReviewForm({ bookId }: ReviewFormProps) {
             id="reviewText"
             name="reviewText"
             rows={4}
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
             className="mt-1 block w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm text-white focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
             placeholder="Tell us what you thought..."
           ></textarea>
@@ -83,7 +95,7 @@ export default function ReviewForm({ bookId }: ReviewFormProps) {
           disabled={rating === 0}
           className="w-full bg-cyan-500 text-black font-bold py-2 px-4 rounded-md hover:bg-cyan-400 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed"
         >
-          Submit Review
+          {existingReview ? 'Update Review' : 'Submit Review'}
         </button>
 
         {message && (
@@ -95,3 +107,4 @@ export default function ReviewForm({ bookId }: ReviewFormProps) {
     </div>
   );
 }
+

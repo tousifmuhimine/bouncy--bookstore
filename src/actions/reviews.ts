@@ -1,7 +1,8 @@
 /*
 ================================================================================
- FILE: src/actions/reviews.ts (NEW FILE)
- DESC: A server action to handle the submission of new reviews.
+ FILE: src/actions/reviews.ts (UPDATE THIS FILE)
+ DESC: This action is now updated to use 'upsert'. It will create a new review
+       if one doesn't exist for the user/book, or update the existing one if it does.
 ================================================================================
 */
 "use server";
@@ -27,21 +28,22 @@ export async function submitReview(formData: FormData) {
     return { error: "Book ID and rating are required." };
   }
   
-  const { error } = await supabase.from("reviews").insert({
+  // FIX: Using upsert to either create a new review or update an existing one.
+  const { error } = await supabase.from("reviews").upsert({
     user_id: user.id,
     book_id: parseInt(bookId as string),
     rating: parseInt(rating as string),
     review_text: reviewText as string,
     user_name: userName,
-  });
+  }, { onConflict: 'user_id, book_id' }); // This tells Supabase to check for a duplicate user_id/book_id pair.
 
   if (error) {
-    console.error("Error inserting review:", error);
-    return { error: "Failed to submit review. You may have already reviewed this book." };
+    console.error("Error upserting review:", error);
+    return { error: "Failed to submit review." };
   }
 
-  // Revalidate the book page to show the new review instantly
   revalidatePath(`/book/${bookId}`);
   
   return { success: "Review submitted successfully!" };
 }
+
