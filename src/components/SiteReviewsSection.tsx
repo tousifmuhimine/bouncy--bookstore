@@ -1,6 +1,8 @@
 /*
 ================================================================================
- FILE: src/components/SiteReviewsSection.tsx
+ FILE: src/components/SiteReviewsSection.tsx (UPDATE THIS FILE)
+ DESC: This component has been updated with a more compact design and improved
+       logic for editing reviews.
 ================================================================================
 */
 "use client";
@@ -15,7 +17,6 @@ import { useEffect, useState } from 'react';
 interface SiteReviewsSectionProps {
   reviews: SiteReview[];
   user: User | null;
-  userReview: SiteReview | null;
 }
 
 const StarRating = ({ rating }: { rating: number }) => (
@@ -32,11 +33,15 @@ const StarRating = ({ rating }: { rating: number }) => (
 
 export default function SiteReviewsSection({ reviews, user }: SiteReviewsSectionProps) {
   const [userReview, setUserReview] = useState<SiteReview | null>(null);
+  // NEW: State to control when the editing form is visible
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (user && reviews) {
       const foundReview = reviews.find(r => r.user_id === user.id);
       setUserReview(foundReview || null);
+      // Reset editing state if the review changes (e.g., after submission)
+      setIsEditing(false);
     }
   }, [reviews, user]);
   
@@ -54,14 +59,15 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
         </div>
         
         {floatingReviews.length > 0 && (
-          <div className="relative h-96 flex justify-center items-center">
+          // FIX: Reduced the height of the container to take up less space
+          <div className="relative h-80 flex justify-center items-center">
             {floatingReviews.map((review, index) => {
               const positions = [
                 { top: '5%', left: '10%' },
-                { top: '50%', left: '0%' },
-                { top: '10%', right: '5%' },
-                { top: '60%', right: '15%' },
-                { top: '30%', left: '40%' },
+                { top: '55%', left: '5%' },
+                { top: '10%', right: '8%' },
+                { top: '60%', right: '18%' },
+                { top: '30%', left: '45%' },
               ];
               const animationDurations = ['10s', '12s', '9s', '11s', '13s'];
               const position = positions[index % positions.length];
@@ -70,17 +76,18 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
               return (
                 <div
                   key={review.id}
-                  className="absolute p-6 w-56 h-56 bg-slate-800/80 backdrop-blur-md rounded-full border border-slate-700 flex flex-col items-center justify-center text-center shadow-2xl"
+                  // FIX: Made the bubbles smaller (w-48 h-48)
+                  className="absolute p-4 w-48 h-48 bg-slate-800/80 backdrop-blur-md rounded-full border border-slate-700 flex flex-col items-center justify-center text-center shadow-2xl"
                   style={{
                     ...position,
                     animation: `float-bubble ${duration} ease-in-out infinite`,
                     animationDelay: `${index * -2}s`,
                   }}
                 >
-                  <div className="w-12 h-12 mb-2 rounded-full bg-gradient-to-br from-cyan-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xl">
+                  <div className="w-10 h-10 mb-2 rounded-full bg-gradient-to-br from-cyan-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-lg">
                     {review.user_name.charAt(0)}
                   </div>
-                  <p className="font-bold text-sm text-white">{review.user_name}</p>
+                  <p className="font-bold text-xs text-white">{review.user_name}</p>
                   <div className="my-1">
                     <StarRating rating={review.rating} />
                   </div>
@@ -91,8 +98,21 @@ export default function SiteReviewsSection({ reviews, user }: SiteReviewsSection
           </div>
         )}
         
-        {user && <SiteReviewForm existingReview={userReview} />}
+        {/* FIX: Updated logic to show 'Edit' button or the form */}
+        {user && (
+          userReview && !isEditing ? (
+            <div className="text-center mt-8">
+              <p className="text-slate-300">Thank you for your review!</p>
+              <button onClick={() => setIsEditing(true)} className="mt-2 text-cyan-400 hover:text-cyan-300 font-semibold">
+                Edit Your Review
+              </button>
+            </div>
+          ) : (
+            <SiteReviewForm existingReview={userReview} />
+          )
+        )}
       </div>
     </div>
   );
 }
+
