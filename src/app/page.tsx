@@ -1,8 +1,9 @@
 /*
 ================================================================================
  FILE: src/app/page.tsx (UPDATE THIS FILE)
- DESC: Fixed the SiteReviewsSection by moving user review logic to server side.
-       Also fixed layout bug where the 'See All' links were not visible.
+ DESC: This is the updated homepage. It now fetches books that have preview
+       images and renders the new BookPreview component right after the
+       main hero section.
 ================================================================================
 */
 import Link from 'next/link';
@@ -10,6 +11,7 @@ import HeroSection from '@/components/HeroSection';
 import HorizontalCarousel from '@/components/HorizontalCarousel';
 import BookCarousel from '@/components/BookCarousel';
 import SiteReviewsSection from '@/components/SiteReviewsSection';
+import BookPreview from '@/components/BookPreview'; // Import the new component
 import type { Book, SiteReview } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 
@@ -17,16 +19,13 @@ export default async function Home() {
   const supabase = await createClient();
   
   const { data: books, error: booksError } = await supabase.from('books').select<"*", Book>("*");
-
   const { data: siteReviews, error: siteReviewsError } = await supabase
     .from('site_reviews')
     .select<"*", SiteReview>("*")
     .order('created_at', { ascending: false })
     .limit(10);
-    
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Find user's existing review on the server side
   let userReview: SiteReview | null = null;
   if (user && siteReviews) {
     userReview = siteReviews.find(r => r.user_id === user.id) || null;
@@ -44,13 +43,19 @@ export default async function Home() {
   const topSells = books.filter(book => book.is_top_sell).slice(0, 10);
   const favorites = books.filter(book => book.is_favorite).slice(0, 10);
   const sections = [...new Set(books.map(book => book.section))];
+  
+  // Create a new list of books specifically for the preview feature
+  const featuredBooks = books.filter(book => book.preview_image_urls && book.preview_image_urls.length > 0);
 
   return (
     <div className="space-y-16 pb-16">
       <HeroSection />
+
+      {/* NEW: Render the BookPreview component if there are featured books */}
+      {featuredBooks.length > 0 && <BookPreview featuredBooks={featuredBooks} />}
+
       <div className="space-y-16">
         <div>
-          {/* FIX: Corrected the flexbox layout to ensure 'See All' is always visible */}
           <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
             <h2 className="text-3xl font-bold text-white">Explore Our Sections</h2>
             <Link href="/sections" className="text-cyan-400 hover:text-cyan-300 font-semibold flex-shrink-0">See All &rarr;</Link>
@@ -70,7 +75,6 @@ export default async function Home() {
         </div>
         
         <div>
-          {/* FIX: Corrected the flexbox layout to ensure 'See All' is always visible */}
           <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
             <h2 className="text-3xl font-bold text-white">Top Sells</h2>
             <Link href="/collection/top-sells" className="text-cyan-400 hover:text-cyan-300 font-semibold flex-shrink-0">See All &rarr;</Link>
@@ -79,7 +83,6 @@ export default async function Home() {
         </div>
 
         <div>
-          {/* FIX: Corrected the flexbox layout to ensure 'See All' is always visible */}
           <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
             <h2 className="text-3xl font-bold text-white">Editor's Favorites</h2>
             <Link href="/collection/editors-favorites" className="text-cyan-400 hover:text-cyan-300 font-semibold flex-shrink-0">See All &rarr;</Link>
